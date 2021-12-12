@@ -1,0 +1,18 @@
+<Valuta name="Foreign Currency Market Lib">
+    <Item ID="R01010">
+        <Name>Австралийский доллар</Name>
+        <EngName>Australian Dollar</EngName>
+        <Nominal>1</Nominal>
+        <ParentCode>R01010 </ParentCode>
+        <ISO_Num_Code>36</ISO_Num_Code>
+        <ISO_Char_Code>AUD</ISO_Char_Code>
+    </Item>
+    <Item ID="R01015">
+        <Name>Австрийский шиллинг</Name>
+        <EngName>Austrian Shilling</EngName>
+        <Nominal>1000</Nominal>
+        <ParentCode>R01015 </ParentCode>
+        <ISO_Num_Code>40</ISO_Num_Code>
+        <ISO_Char_Code>ATS</ISO_Char_Code>
+    </Item>
+</Valuta>

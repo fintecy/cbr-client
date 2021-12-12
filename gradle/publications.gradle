@@ -1,0 +1,72 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'CBR Client'
+                packaging = 'jar'
+                description = 'Async Java client for central bank of Russia.'
+                url = 'https://github.com/fintecy/cbr-client'
+
+                scm {
+                    connection = 'scm:git:https://github.com/fintecy/cbr-client.git'
+                    developerConnection = 'scm:git:https://github.com/fintecy/cbr-client.git'
+                    url = 'https://fintecy.github.io/cbr-client'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = "repo"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'batiaev'
+                        name = 'Anton Batiaev'
+                        email = 'anton@batiaev.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = hasProperty('ossrhUsername') ? ossrhUsername : 'foo'
+                password = hasProperty('ossrhPassword') ? ossrhPassword : 'bar'
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
