@@ -72,7 +72,7 @@ class CbrClientTest {
     @Test
     void should_test_historical_rates() {
         //given
-        String api = "XML_val";
+        String api = "XML_daily";
         var asOf = LocalDate.now().minusWeeks(1);
         final var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         stubFor(get("/" + api + ".asp?date_req=" + formatter.format(asOf))

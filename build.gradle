@@ -5,8 +5,8 @@ plugins {
 }
 
 dependencies {
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:3.0.1'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:${jakartaVersion}"
+    implementation "com.sun.xml.bind:jaxb-impl:${jakartaVersion}"
     implementation "dev.failsafe:failsafe:${failsafeVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     testImplementation "com.github.tomakehurst:wiremock-jre8:${wireMockVersion}"
@@ -20,7 +20,7 @@ test {
 }
 
 wrapper {
-    gradleVersion = '7.3.1'
+    gradleVersion = '7.3.3'
 }
 
 repositories {
