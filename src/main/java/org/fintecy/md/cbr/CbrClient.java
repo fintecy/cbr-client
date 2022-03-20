@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 import static java.math.BigDecimal.valueOf;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -39,11 +39,6 @@ public class CbrClient implements CbrApi {
 
     public static CbrClientBuilder cbrClient() {
         return new CbrClientBuilder();
-    }
-
-    public static double checkRequired(double v, String msg) {
-        return (v == 0 ? Optional.<Double>empty() : Optional.of(v))
-                .orElseThrow(() -> new IllegalArgumentException(msg));
     }
 
     public static <T> T checkRequired(T v, String msg) {
@@ -105,5 +100,19 @@ public class CbrClient implements CbrApi {
                 .map(q -> new ExchangeRate(currency("RUB"), currency(q.getCurrCode()), processRequest.getDate(),
                         valueOf(q.getValue() / q.getNominal())))
                 .collect(toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CbrClient cbrClient = (CbrClient) o;
+        return Objects.equals(rootPath, cbrClient.rootPath)
+                && Objects.equals(policies, cbrClient.policies);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rootPath, policies);
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.math.BigDecimal.valueOf;
 import static java.time.LocalDate.parse;
+import static org.fintecy.md.cbr.CbrClient.api;
 import static org.fintecy.md.cbr.CbrClient.cbrClient;
 import static org.fintecy.md.cbr.model.Currency.currency;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,6 +20,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @WireMockTest(httpPort = 7777)
 class CbrClientTest {
+
+    @Test
+    void should_create_equal_client() {
+        //when
+        var actual = api();
+        var expected = cbrClient().build();
+        //then
+        assertEquals(expected, actual);
+    }
 
     @Test
     void should_test_supported_currencies() {

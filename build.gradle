@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:${jakartaVersion}"
-    implementation "com.sun.xml.bind:jaxb-impl:${jakartaVersion}"
+    implementation "com.sun.xml.bind:jaxb-impl:${jaxbVersion}"
     implementation "dev.failsafe:failsafe:${failsafeVersion}"
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     testImplementation "com.github.tomakehurst:wiremock-jre8:${wireMockVersion}"
