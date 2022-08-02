@@ -18,7 +18,7 @@ public interface CbrApi {
 
     /**
      * @return latest daily rates
-     * @see <a href="https://www.cbr.ru/scripts/XML_val.asp">daily</a>
+     * @see <a href="https://www.cbr.ru/scripts/XML_daily.asp">daily</a>
      */
     default List<ExchangeRate> rates() {
         return rates(false);
@@ -27,7 +27,7 @@ public interface CbrApi {
     /**
      * @param monthly if true - return latest monthly rates
      * @return latest monthly/daily rates
-     * @see <a href="https://www.cbr.ru/scripts/XML_val.asp?d=1">monthly</a>
+     * @see <a href="https://www.cbr.ru/scripts/XML_daily.asp?d=1">monthly</a>
      */
     @Deprecated
     List<ExchangeRate> rates(boolean monthly);
@@ -60,7 +60,10 @@ public interface CbrApi {
 
     /**
      * @return list of supported currencies
+     * @see <a href="https://www.cbr.ru/scripts/XML_val.asp">docs</a>
      * @see <a href="https://www.cbr.ru/scripts/XML_valFull.asp">docs</a>
+     * @see <a href="https://www.cbr.ru/scripts/XML_valFull.asp?d=0">currency codes for daily rates</a>
+     * @see <a href="https://www.cbr.ru/scripts/XML_valFull.asp?d=1">currency codes for monthly rates</a>
      */
     List<CbrCurrency> supportedCurrencies();
 }

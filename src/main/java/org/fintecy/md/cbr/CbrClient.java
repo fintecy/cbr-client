@@ -48,7 +48,7 @@ public class CbrClient implements CbrApi {
 
     @Override
     public List<ExchangeRate> rates(boolean monthly) {
-        return convert(processRequest("/XML_val.asp" + (monthly ? "?d=1" : ""), CbrDailyQuoteResponse.class));
+        return convert(processRequest("/XML_daily.asp" + (monthly ? "?d=1" : ""), CbrDailyQuoteResponse.class));
     }
 
     @Override

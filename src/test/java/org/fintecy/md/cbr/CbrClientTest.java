@@ -102,7 +102,7 @@ class CbrClientTest {
     @Test
     void should_test_latest_monthly_rates() {
         //given
-        String api = "XML_val";
+        String api = "XML_daily";
         stubFor(get("/" + api + ".asp?d=1")
                 .willReturn(aResponse()
                         .withBodyFile(api + ".xml")));
@@ -121,7 +121,7 @@ class CbrClientTest {
     @Test
     void should_test_latest_rates() {
         //given
-        String api = "XML_val";
+        String api = "XML_daily";
         stubFor(get("/" + api + ".asp")
                 .willReturn(aResponse()
                         .withBodyFile(api + ".xml")));
