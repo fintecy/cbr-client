@@ -3,11 +3,14 @@ package org.fintecy.md.cbr;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.fintecy.md.cbr.model.CbrCurrency;
 import org.fintecy.md.cbr.model.ExchangeRate;
+import org.fintecy.md.cbr.model.InterestRate;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.math.BigDecimal.valueOf;
@@ -15,6 +18,7 @@ import static java.time.LocalDate.parse;
 import static org.fintecy.md.cbr.CbrClient.api;
 import static org.fintecy.md.cbr.CbrClient.cbrClient;
 import static org.fintecy.md.cbr.model.Currency.currency;
+import static org.fintecy.md.cbr.model.Tenor.tenor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -55,22 +59,56 @@ class CbrClientTest {
     @Test
     void should_test_depositRates() {
         //given
-        LocalDate to = LocalDate.now();
-        LocalDate from = to.minusWeeks(1);
+        var api = "XML_depo";
+        var to = LocalDate.now();
+        var from = to.minusWeeks(1);
+        final var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        stubFor(get("/" + api + ".asp?date_req1=" + formatter.format(from) + "&date_req2=" + formatter.format(to))
+                .willReturn(aResponse()
+                        .withBodyFile(api + ".xml")));
+        var expected = expectedDepoRatesResponse();
         //when
-        //then
-        assertThrows(IllegalStateException.class, () -> cbrClient()
+        var actual = cbrClient()
                 .rootPath("http://localhost:7777")
                 .build()
-                .depositRates(from, to));
+                .depositRates(from, to);
+        //then
+        assertEquals(expected, actual);
+    }
+
+    private Map<LocalDate, List<InterestRate>> expectedDepoRatesResponse() {
+        return Map.of(
+                parse("2001-07-02"), List.of(
+                        new InterestRate(tenor("ON"), parse("2022-08-02"), new BigDecimal(2)),
+                        new InterestRate(tenor("TN"), parse("2022-08-02"), new BigDecimal("2.3")),
+                        new InterestRate(tenor("SN"), parse("2022-08-02"), new BigDecimal("2.5")),
+                        new InterestRate(tenor("W1"), parse("2022-08-02"), new BigDecimal(7)),
+                        new InterestRate(tenor("W1S"), parse("2022-08-02"), new BigDecimal("7.5")),
+                        new InterestRate(tenor("W2"), parse("2022-08-02"), new BigDecimal("8.5")),
+                        new InterestRate(tenor("W2S"), parse("2022-08-02"), new BigDecimal(9)),
+                        new InterestRate(tenor("M1"), parse("2022-08-02"), new BigDecimal(10)),
+                        new InterestRate(tenor("M3"), parse("2022-08-02"), new BigDecimal(12))
+                ),
+                parse("2001-07-03"), List.of(
+                        new InterestRate(tenor("ON"), parse("2022-08-02"), new BigDecimal(2)),
+                        new InterestRate(tenor("TN"), parse("2022-08-02"), new BigDecimal("2.3")),
+                        new InterestRate(tenor("SN"), parse("2022-08-02"), new BigDecimal("2.5")),
+                        new InterestRate(tenor("W1"), parse("2022-08-02"), new BigDecimal(7)),
+                        new InterestRate(tenor("W1S"), parse("2022-08-02"), new BigDecimal("7.5")),
+                        new InterestRate(tenor("W2"), parse("2022-08-02"), new BigDecimal("8.5")),
+                        new InterestRate(tenor("W2S"), parse("2022-08-02"), new BigDecimal(9)),
+                        new InterestRate(tenor("M1"), parse("2022-08-02"), new BigDecimal(10)),
+                        new InterestRate(tenor("M3"), parse("2022-08-02"), new BigDecimal(12))
+                )
+        );
     }
 
     @Test
     void should_test_historical_rates_by_currency() {
         //given
-        String code = "GBP";
-        LocalDate to = LocalDate.now();
-        LocalDate from = to.minusWeeks(1);
+        var code = "GBP";
+        var to = LocalDate.now();
+        var from = to.minusWeeks(1);
         //when
         //then
         assertThrows(IllegalStateException.class, () -> cbrClient()
@@ -82,7 +120,7 @@ class CbrClientTest {
     @Test
     void should_test_historical_rates() {
         //given
-        String api = "XML_daily";
+        var api = "XML_daily";
         var asOf = LocalDate.now().minusWeeks(1);
         final var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         stubFor(get("/" + api + ".asp?date_req=" + formatter.format(asOf))
@@ -102,7 +140,7 @@ class CbrClientTest {
     @Test
     void should_test_latest_monthly_rates() {
         //given
-        String api = "XML_daily";
+        var api = "XML_daily";
         stubFor(get("/" + api + ".asp?d=1")
                 .willReturn(aResponse()
                         .withBodyFile(api + ".xml")));

@@ -12,15 +12,14 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static java.math.BigDecimal.valueOf;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.fintecy.md.cbr.model.Currency.currency;
+import static org.fintecy.md.cbr.model.Tenor.tenor;
 
 public class CbrClient implements CbrApi {
     private final String rootPath;
@@ -55,7 +54,7 @@ public class CbrClient implements CbrApi {
     public List<ExchangeRate> rates(LocalDate date) {
         boolean monthly = date.getDayOfMonth() == 1;
         final var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return convert(processRequest("/XML_daily.asp" + "?date_req=" + date.format(formatter) + (monthly ? "&d=1" : ""), CbrDailyQuoteResponse.class));
+        return convert(processRequest("/XML_daily.asp?date_req=" + date.format(formatter) + (monthly ? "&d=1" : ""), CbrDailyQuoteResponse.class));
     }
 
     @Override
@@ -65,7 +64,27 @@ public class CbrClient implements CbrApi {
 
     @Override
     public Map<LocalDate, List<InterestRate>> depositRates(LocalDate from, LocalDate to) {
-        throw new IllegalStateException("not implemented");
+        final var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return convert(processRequest("/XML_depo.asp?date_req1=" + from.format(formatter) + "&date_req2=" + to.format(formatter), CbrDepositRatesResponse.class).getRecords());
+    }
+
+    private Map<LocalDate, List<InterestRate>> convert(List<CbrDepositRate> records) {
+        LocalDate now = LocalDate.now();
+        HashMap<LocalDate, List<InterestRate>> result = new HashMap<>();
+        for (CbrDepositRate record : records) {
+            result.putIfAbsent(record.getDate(), new ArrayList<>());
+            List<InterestRate> irs = result.get(record.getDate());
+            irs.add(new InterestRate(tenor("ON"), now, record.getOvernight()));
+            irs.add(new InterestRate(tenor("TN"), now, record.getTomNext()));
+            irs.add(new InterestRate(tenor("SN"), now, record.getSpotNext()));
+            irs.add(new InterestRate(tenor("W1"), now, record.getP1week()));
+            irs.add(new InterestRate(tenor("W1S"), now, record.getSpotWeek()));
+            irs.add(new InterestRate(tenor("W2"), now, record.getP2weeks()));
+            irs.add(new InterestRate(tenor("W2S"), now, record.getSpot2Weeks()));
+            irs.add(new InterestRate(tenor("M1"), now, record.getP1month()));
+            irs.add(new InterestRate(tenor("M3"), now, record.getP3month()));
+        }
+        return result;
     }
 
     @Override
