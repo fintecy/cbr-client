@@ -62,7 +62,7 @@ class CbrClientTest {
         var api = "XML_depo";
         var to = LocalDate.now();
         var from = to.minusWeeks(1);
-        final var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         stubFor(get("/" + api + ".asp?date_req1=" + formatter.format(from) + "&date_req2=" + formatter.format(to))
                 .willReturn(aResponse()
                         .withBodyFile(api + ".xml")));
@@ -77,28 +77,29 @@ class CbrClientTest {
     }
 
     private Map<LocalDate, List<InterestRate>> expectedDepoRatesResponse() {
+        var now = LocalDate.now();
         return Map.of(
                 parse("2001-07-02"), List.of(
-                        new InterestRate(tenor("ON"), parse("2022-08-02"), new BigDecimal(2)),
-                        new InterestRate(tenor("TN"), parse("2022-08-02"), new BigDecimal("2.3")),
-                        new InterestRate(tenor("SN"), parse("2022-08-02"), new BigDecimal("2.5")),
-                        new InterestRate(tenor("W1"), parse("2022-08-02"), new BigDecimal(7)),
-                        new InterestRate(tenor("W1S"), parse("2022-08-02"), new BigDecimal("7.5")),
-                        new InterestRate(tenor("W2"), parse("2022-08-02"), new BigDecimal("8.5")),
-                        new InterestRate(tenor("W2S"), parse("2022-08-02"), new BigDecimal(9)),
-                        new InterestRate(tenor("M1"), parse("2022-08-02"), new BigDecimal(10)),
-                        new InterestRate(tenor("M3"), parse("2022-08-02"), new BigDecimal(12))
+                        new InterestRate(tenor("ON"), now, new BigDecimal(2)),
+                        new InterestRate(tenor("TN"), now, new BigDecimal("2.3")),
+                        new InterestRate(tenor("SN"), now, new BigDecimal("2.5")),
+                        new InterestRate(tenor("W1"), now, new BigDecimal(7)),
+                        new InterestRate(tenor("W1S"), now, new BigDecimal("7.5")),
+                        new InterestRate(tenor("W2"), now, new BigDecimal("8.5")),
+                        new InterestRate(tenor("W2S"), now, new BigDecimal(9)),
+                        new InterestRate(tenor("M1"), now, new BigDecimal(10)),
+                        new InterestRate(tenor("M3"), now, new BigDecimal(12))
                 ),
                 parse("2001-07-03"), List.of(
-                        new InterestRate(tenor("ON"), parse("2022-08-02"), new BigDecimal(2)),
-                        new InterestRate(tenor("TN"), parse("2022-08-02"), new BigDecimal("2.3")),
-                        new InterestRate(tenor("SN"), parse("2022-08-02"), new BigDecimal("2.5")),
-                        new InterestRate(tenor("W1"), parse("2022-08-02"), new BigDecimal(7)),
-                        new InterestRate(tenor("W1S"), parse("2022-08-02"), new BigDecimal("7.5")),
-                        new InterestRate(tenor("W2"), parse("2022-08-02"), new BigDecimal("8.5")),
-                        new InterestRate(tenor("W2S"), parse("2022-08-02"), new BigDecimal(9)),
-                        new InterestRate(tenor("M1"), parse("2022-08-02"), new BigDecimal(10)),
-                        new InterestRate(tenor("M3"), parse("2022-08-02"), new BigDecimal(12))
+                        new InterestRate(tenor("ON"), now, new BigDecimal(2)),
+                        new InterestRate(tenor("TN"), now, new BigDecimal("2.3")),
+                        new InterestRate(tenor("SN"), now, new BigDecimal("2.5")),
+                        new InterestRate(tenor("W1"), now, new BigDecimal(7)),
+                        new InterestRate(tenor("W1S"), now, new BigDecimal("7.5")),
+                        new InterestRate(tenor("W2"), now, new BigDecimal("8.5")),
+                        new InterestRate(tenor("W2S"), now, new BigDecimal(9)),
+                        new InterestRate(tenor("M1"), now, new BigDecimal(10)),
+                        new InterestRate(tenor("M3"), now, new BigDecimal(12))
                 )
         );
     }

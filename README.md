@@ -4,6 +4,23 @@
 
 Java client based on new HttpClient (java 11+)
 
+## Dependency
+https://mvnrepository.com/artifact/org.fintecy.md/cbr-client/1.0.1
+
+### Gradle
+```
+implementation 'org.fintecy.md:cbr-client:1.0.1'
+```
+
+### Maven
+```
+<dependency>
+    <groupId>org.fintecy.md</groupId>
+    <artifactId>cbr-client</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
 ## Usage
 ### Simple client creation
 ```
